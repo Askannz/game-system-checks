@@ -14,7 +14,9 @@ int main() {
 
 	for(auto const& pci_gpu: gpu_list) {
 		const std::string name = VENDOR_NAME_MAP[pci_gpu.vendor];
-		std::cout << name << " at " << pci_gpu.bus_id << std::endl;
+		std::cout << name << " at " << pci_gpu.bus_id << std::endl
+				  << "\t" << "Driver : " << pci_gpu.driver << std::endl
+				  << "\t" << "Driver version : " << pci_gpu.driver_version << std::endl;
 	}
 
 	return EXIT_SUCCESS;

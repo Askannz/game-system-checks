@@ -10,6 +10,8 @@ struct GpuPCIinfo
 {
 	GpuVendor vendor;
 	std::string bus_id;
+	std::string driver;
+	std::string driver_version;
 };
 
 std::vector<GpuPCIinfo> get_PCI_GPUs_list();
