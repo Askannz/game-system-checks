@@ -8,7 +8,8 @@ extern "C"
 
 #include <iostream>
 #include <string>
-
+#include <vector>
+#include <regex>
 
 /**
  * Choose a simple FB Config.
@@ -100,19 +101,38 @@ std::string get_screen_info(Display *dpy, int scrnum)
    return version_string;
 }
 
+std::vector<std::string> _parse_opengl_version_string(std::string opengl_version_string) {
 
-std::string get_opengl_info() {
+   std::vector<std::string> gl_info_strings;
+
+   if(std::regex_match(opengl_version_string, std::regex("[^ ]+ [^ ]+ [^ ]+"))) {
+
+      // Version string should look something  like "4.6.0 NVIDIA 415.25"
+      size_t n;
+      std::string s(opengl_version_string);
+
+      for (int i = 0 ; i < 2 ; i++) {
+         n = opengl_version_string.find(" ");
+         gl_info_strings.push_back(s.substr(0, n));
+         s = s.substr(n+1, std::string::npos);
+      }
+      gl_info_strings.push_back(s);
+   }
+
+   return gl_info_strings;
+}
+
+std::vector<std::string> get_opengl_info() {
 
    Display *dpy;
    int numScreens;
 
-   std::string version_string = "";
+   std::vector<std::string> gl_info_strings;
 
    dpy = XOpenDisplay(NULL);
    if (!dpy) {
 
       std::cout << "Error: unable to open display" << XDisplayName(NULL) << std::endl;
-      version_string = "";
 
    } else {
 
@@ -120,12 +140,14 @@ std::string get_opengl_info() {
 
       if (numScreens == 0)
          std::cout << "Error: 0 displays opened." << std::endl;
-      else
-         version_string = get_screen_info(dpy, 0);
+      else {
+         std::string version_string = get_screen_info(dpy, 0);
+         gl_info_strings = _parse_opengl_version_string(version_string);
+      }
 
       XCloseDisplay(dpy);
 
    }
 
-   return version_string;
+   return gl_info_strings;
 }

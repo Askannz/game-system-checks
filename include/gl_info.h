@@ -2,7 +2,8 @@
 #define GL_INFO_H
 
 #include <string>
+#include <vector>
 
-std::string get_opengl_info();
+std::vector<std::string> get_opengl_info();
 
 #endif
